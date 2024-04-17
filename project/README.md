@@ -183,15 +183,17 @@ Proposal
 
 The project proposal is a one page PDF document that describes:
 
-* Who is on your team
+* Who is on your team (team sizes can be between three and six
+  students, but six is really too big to be effective; my suggestion
+  is that most groups should be between four or five).
 
 * What techniques you will explore 
 
 * Your timeline for completing the project (be realistic; you should
   have your first submission in a week or two)
 
-Have the person whose last name is alphabetically last submit the
-proposal on Piazza.  Late days cannot be used on this
+Submit the proposal on Gradescope, but make sure to include all group
+members.  If all group members are not included, you will lose points.  Late days cannot be used on this
 assignment.
 
 Milestone 1
@@ -200,11 +202,14 @@ Milestone 1
 You'll have to update how things are going: what's
 working, what isn't, and how does it change your timeline?  How does it change your division of labor?
 
-*Question Writing*: You'll need to have answers selected for all of your questions and first drafts of at least 15 questions.
+*Question Writing*: You'll need to have answers selected for all of
+your questions and first drafts of at least 15 questions.  This must
+be submitted as a JSON file so that we run computer QA systems on it.
 
 *Project*: You'll need to have made a submission to the leaderboard with something that satisfies the API.
 
-Submit a PDF updating on your progress.
+Submit a PDF updating on your progress to Gradescope.  If all team
+members are not on the submission, you will lose points.
 
 Milestone 2
 ===================
@@ -253,6 +258,11 @@ the final presentation you will:
   individually contribute to your final result?
 
 Each group has 10 minutes to deliver their presentation. Please record the video, and upload it to Google Drive, and include the link in your writeup submission.
+
+Final Question Submission
+======================
+
+Because we need to get the questions ready for the systems, upload your raw questions on May 10.  This doesn't include the citations or other parts of the writeup.
 
 System Submission
 ======================
