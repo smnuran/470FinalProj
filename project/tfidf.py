@@ -1,37 +1,51 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np 
 import json
 
+class TfidfWikiGuesser:
+    def __init__(self, wikidump = 'resources/wiki_text_16.json') -> None:
+        self.tfidf = None 
+        self.corpus = None 
+        self.titles = None 
+        self.vectorizer = None 
 
-def create_corpus(json_file):
-    corpus = []
-    page_titles = []
-    
-    for json_obj in json_file:
-        corpus.append(json_obj['text'])
-        page_titles.append(json_obj['page'])
+        self.load_model(wikidump)
 
+    def load_model(self, wikidump):
+        #wiki dump is an json array of json objects with page and text fields 
+        with open(wikidump) as f:
+            doc = json.load(f)
 
-    return (corpus, page_titles)
+        self.corpus, self.titles = self.create_corpus(doc)
 
+        self.vectorizer = TfidfVectorizer()
+        self.tfidf = self.vectorizer.fit_transform(self.corpus)
 
-#wiki dump is an json array of json objects with page and text fields 
-with open('resources/wiki_text_16.json') as f:
-    doc = json.load(f)
+    def create_corpus(self, json_file):
+        corpus = []
+        page_titles = []
+        
+        for json_obj in json_file:
+            corpus.append(json_obj['text'])
+            page_titles.append(json_obj['page'])
 
-corpus, titles = create_corpus(doc)
+        return (corpus, page_titles)
 
-vectorizer = TfidfVectorizer()
-tfidf = vectorizer.fit_transform(corpus)
+    def make_guess(self, question, num_guesses = 1):
+        tfidf_question = self.vectorizer.transform([question])
 
-question = "An object orbiting this planet contains sections named Liberty, Equality, and Fraternity. A small group of clouds on this planet was nicknamed \"the Scooter\" for its high speed. Volcanoes that eject ice were first observed on an object that orbits this planet. The first high resolution images of this object were taken by Voyager 2 and revealed a storm system known as the \"Great Dark Spot\". Johann Galle first observed this planet from a telescope using predictions made by Urbain Le Verrier [\"ur-BAIN le vay-ree-AY\"] about its effects on the orbit of Uranus. For 10 points, name this dark blue gas giant, the outermost planet in the Solar System."
-tfidf_question = vectorizer.transform([question])
+        sim = cosine_similarity(self.tfidf, tfidf_question) 
 
-sim = cosine_similarity(tfidf, tfidf_question) 
+        #get indices of best matching documents and use it to get (num_guesses) top documents 
+        sim_indices = np.argsort(sim.flatten())[::-1]
+        best_indices = sim_indices[:num_guesses]
+        
+        best_docs = []
+        best_guesses = []
+        for i in best_indices:
+            best_docs.append(self.corpus[i])
+            best_guesses.append(self.titles[i])
 
-#get index of best matching document and use it to get sim document 
-sim_index = sim.argmax()
-sim_doc = corpus[sim_index]
-
-print(titles[sim_index])
-# print(corpus[sim_index])
+        return best_guesses
+        
