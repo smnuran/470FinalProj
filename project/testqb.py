@@ -1,4 +1,5 @@
 from qbmodel import QuizBowlModel
+import json 
 
 qb = QuizBowlModel()
 
@@ -10,6 +11,45 @@ question = '''An object orbiting this planet contains sections named Liberty, Eq
  For 10 points, name this dark blue gas giant, the outermost planet in the Solar System.
 '''
 
-result = qb.guess_and_buzz([question])
 
-print(result)
+#can split question into chunks to see how guesser works on harder difficulty. 
+splits = question.split(".")
+
+data_source = 'resources/small.guesstrain.json'
+with open(data_source) as f:
+            doc = json.load(f)
+questions_json = doc['questions']
+questions = []
+answers = []
+limit = 200000 #only test this many or less questions 
+for question_json in questions_json:
+    question = question_json['text']
+    answer = question_json['answer']
+    questions.append(question)
+    answers.append(answer)
+
+    limit -= 1 
+    if limit < 0:
+          break 
+
+
+
+
+#questions = # splits #[question]
+result = qb.guess_and_buzz(questions)
+correct = 0 
+almost_correct = 0
+
+for idx, (result_answer, result_bool) in enumerate(result): 
+        if answers[idx] == result_answer:
+            correct += 1 
+            #print("correct | question: " + questions[idx] + " | answer: " + result_answer)
+        elif answers[idx].find(result_answer) != -1:
+            print("almost | correct answer: " + answers[idx] + " | result: " + result_answer)
+            almost_correct += 1
+
+
+correct_acc = correct/(len(answers))    
+almost_acc = (correct+almost_correct)/(len(answers))       
+print("correct: " + str(correct_acc))
+print("almost_correct: " + str(almost_acc))
