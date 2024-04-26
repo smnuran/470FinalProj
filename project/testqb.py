@@ -21,7 +21,7 @@ with open(data_source) as f:
 questions_json = doc['questions']
 questions = []
 answers = []
-limit = 200000 #only test this many or less questions 
+limit = 2000 #only test this many or less questions 
 for question_json in questions_json:
     question = question_json['text']
     answer = question_json['answer']

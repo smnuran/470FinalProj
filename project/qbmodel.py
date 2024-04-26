@@ -17,6 +17,7 @@ class QuizBowlModel:
         """
         
         self.guesser = TfidfWikiGuesser() #can specify different wikidump if needed 
+        print("model loaded")
 
 
 
@@ -37,7 +38,7 @@ class QuizBowlModel:
 
         for question in question_text:
             guesses = self.guesser.make_guess(question, num_guesses=top_guesses)
-            print(guesses)
+            #print(guesses)
 
             #do the buzzing 
 
