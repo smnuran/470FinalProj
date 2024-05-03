@@ -17,7 +17,8 @@ class TfidfWikiGuesser:
         self.titles = None 
         self.vectorizer = None 
         self.lemmatizer = WordNetLemmatizer()
-        model_file = "processed_tfidf_wiki_16_model.pkl"
+        model_file = "processed_tfidf_wiki_page_text_model.pkl" # <--- has best acc so far (using wiki_page_text.json from gdrive folder)
+        # model_file = "processed_tfidf_wiki_16_model.pkl"
         # full_model_path = model_file
         full_model_path = os.path.join("./models", model_file)
 
