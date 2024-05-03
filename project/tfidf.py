@@ -42,7 +42,7 @@ class TfidfWikiGuesser:
 
         self.corpus, self.titles = self.create_corpus(doc)
 
-        self.vectorizer = TfidfVectorizer()
+        self.vectorizer = TfidfVectorizer(stop_words='english')
         self.tfidf = self.vectorizer.fit_transform(self.corpus)
 
     def preprocess_text(self,text):
@@ -60,7 +60,8 @@ class TfidfWikiGuesser:
         
         for json_obj in json_file:
             # corpus.append(json_obj['text'])
-            corpus.append(self.preprocess_text(json_obj['text']))
+            #corpus.append(self.preprocess_text(json_obj['text']))
+            corpus.append(json_obj['text'])
             page_titles.append(json_obj['page'])
 
         return (corpus, page_titles)
