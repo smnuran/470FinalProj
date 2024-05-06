@@ -1,0 +1,14 @@
+zimply
+python-baseconv
+gensim
+pandas
+torch
+torchvision
+unidecode
+spacy
+tqdm
+nltk
+bs4
+scikit-learn
+numpy 
+transformers

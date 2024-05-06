@@ -1,6 +1,5 @@
 from typing import List
 from transformers import PreTrainedModel
-from transformers.configuration_utils import PretrainedConfig
 from QBModelConfig import QBModelConfig
 from qbmodel import QuizBowlModel
 
@@ -20,5 +19,5 @@ class QBModelWrapper(PreTrainedModel):
 
     
 
-    def guess(self, question: List[str]):
-        self.model.guess_and_buzz(question)
+    def forward(self, question):
+        return self.model.guess_and_buzz(question)
