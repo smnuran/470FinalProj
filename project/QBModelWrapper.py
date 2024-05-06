@@ -19,6 +19,6 @@ class QBModelWrapper(PreTrainedModel):
         self.model = QuizBowlModel()
 
     
-
-    def guess(self, question: List[str]):
+    #def forward
+    def forward(self, question):
         self.model.guess_and_buzz(question)
