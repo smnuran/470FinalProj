@@ -1,4 +1,5 @@
 from transformers import Pipeline
+from transformers import PreTrainedTokenizer
 from transformers.utils import ModelOutput
 
 from transformers import PreTrainedModel, Pipeline
@@ -8,6 +9,7 @@ class QApipeline(Pipeline):
     def __init__(
         self,
         model: PreTrainedModel,
+        tokenizer: PreTrainedTokenizer,
         **kwargs
     ):
         super().__init__(
@@ -29,7 +31,7 @@ class QApipeline(Pipeline):
 
         print("in __call___")
 
-        return {"answer": answer}
+        return answer 
 
     def _process_output(self, outputs: Any) -> str:
 

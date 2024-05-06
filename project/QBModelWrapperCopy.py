@@ -11,7 +11,7 @@ class QBModelWrapper(PreTrainedModel):
     def __init__(self, config):
         super().__init__(config)
 
-        self.model = QuizBowlModel()
+        self.model = QuizBowlModel(use_hf_pkl=True)
         self.tfmodel = self.model.guesser
 
     

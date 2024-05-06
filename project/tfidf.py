@@ -8,28 +8,42 @@ import os
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
+from huggingface_hub import hf_hub_download
+import joblib
 
 
 class TfidfWikiGuesser:
-    def __init__(self, wikidump = 'resources/wiki_text_16.json') -> None:
+    def __init__(self, wikidump = 'resources/wiki_text_16.json', use_hf_pkl = False) -> None:
         self.tfidf = None 
         self.corpus = None 
         self.titles = None 
         self.vectorizer = None 
         self.lemmatizer = WordNetLemmatizer()
         model_file = "processed_tfidf_wiki_page_text_model.pkl" # <--- has best acc so far (using wiki_page_text.json from gdrive folder)
-        # model_file = "processed_tfidf_wiki_16_model.pkl"
+        #model_file = "processed_tfidf_wiki_16_model.pkl"
         # full_model_path = model_file
         full_model_path = os.path.join("./models", model_file)
 
-        if os.path.exists(full_model_path):
-            print("Loading model from pickle...")
-            self.load_from_pkl(full_model_path)
+        if(use_hf_pkl):
+            REPO_ID = "nes470/pipeline-as-repo"
+            FILENAME = "processed_tfidf_wiki_page_text_model.pkl"
+
+            model = joblib.load(
+                hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
+            )
+            
+        
+            print("loading from hugginface pkl file")
+            self.load_from_pk_direct(model)
         else:
-            if wikidump:
-                print("No pre-trained model found, loading data from dump...")
-                self.load_model(wikidump)
-                self.save_model(full_model_path)
+            if os.path.exists(full_model_path):
+                print("Loading model from pickle...")
+                self.load_from_pkl(full_model_path)
+            else:
+                if wikidump:
+                    print("No pre-trained model found, loading data from dump...")
+                    self.load_model(wikidump)
+                    self.save_model(full_model_path)
         # self.load_model(wikidump)
 
     def load_model(self, wikidump):
@@ -100,3 +114,10 @@ class TfidfWikiGuesser:
             self.tfidf = data['tfidf_matrix']
             self.titles = data['titles']
             # self.corpus = data['corpus']
+
+    def load_from_pk_direct(self, pkl):
+        #data = pickle.load(pkl)
+        data = pkl
+        self.vectorizer = data['vectorizer']
+        self.tfidf = data['tfidf_matrix']
+        self.titles = data['titles']
