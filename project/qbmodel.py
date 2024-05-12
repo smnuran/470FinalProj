@@ -4,6 +4,7 @@ import sklearn
 from tfidf import TfidfWikiGuesser
 import numpy as np
 import pandas as pd
+from LogRegBuzzer import LogisticRegressionBuzzer
 
 
 class QuizBowlModel:
@@ -17,8 +18,10 @@ class QuizBowlModel:
         """
         #best accuracy when using wiki_page_text.json
         self.guesser = TfidfWikiGuesser(wikidump=None, use_hf_pkl= use_hf_pkl) #can specify different wikidump if needed 
-        print("model loaded")
+        print("guesser model loaded")
 
+        self.buzzer = LogisticRegressionBuzzer()
+        print("buzzer model loaded")
 
 
     def guess_and_buzz(self, question_text: List[str]) -> List[Tuple[str, bool]]:
@@ -38,12 +41,17 @@ class QuizBowlModel:
 
         for question in question_text:
             guesses = self.guesser.make_guess(question, num_guesses=top_guesses)
-            #print(guesses)
+            # print(f"\n\n\n answered {len(answers)} questions so far \n\n")
+            # print(f"left to answer {len(question_text)-len(answers)} questions \n\n ")
+            # print(f"progress: {(len(answers)/len(question_text)) * 100} \n\n")
 
             #do the buzzing 
+            buzz = self.buzzer.predict_buzz(question, guesses[0])
+            
 
             #make a tuple and add to answers list 
-            tup = (guesses[0], True)
+            tup = (guesses[0], buzz[1])
+            print(tup)
             answers.append(tup)
 
         return answers
