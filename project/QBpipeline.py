@@ -1,7 +1,7 @@
 from transformers import Pipeline
 from transformers import PreTrainedTokenizer
 from transformers.utils import ModelOutput
-
+import torch 
 from transformers import PreTrainedModel, Pipeline
 from typing import Any, Dict, List
 
@@ -9,7 +9,6 @@ class QApipeline(Pipeline):
     def __init__(
         self,
         model: PreTrainedModel,
-        tokenizer: PreTrainedTokenizer,
         **kwargs
     ):
         super().__init__(
@@ -37,7 +36,7 @@ class QApipeline(Pipeline):
 
         print("in process outputs")
 
-        format =  {'guess': outputs[0], 'confidence': int(outputs[1])}
+        format =  {'guess': outputs[0], 'confidence': outputs[1]}
         return format
 
     

@@ -52,24 +52,49 @@ question = '''An object orbiting this planet contains sections named Liberty, Eq
 
 
 #can split question into chunks to see how guesser works on harder difficulty. 
-splits = question.split(".")
+def get_splits(question: str):
+      splits = question.split(".")
+      full_str = ""
+      result_chunks = []
+      #each split should get longer with each iteration adding upto full question
+      for split in splits:
+            full_str = full_str + "." + split 
+            result_chunks.append(full_str)
+            #print(full_str + "\n")
+      
+      return result_chunks
 
-data_source = 'resources/small.guesstrain.json'
+
+data_source = 'resources/small.buzztrain.json'
 with open(data_source) as f:
             doc = json.load(f)
 questions_json = doc['questions']
 questions = []
 answers = []
-limit = 2000 #only test this many or less questions 
+limit = 20 #only test this many or less questions 
+test_splits = False 
 for question_json in questions_json:
-    question = question_json['text']
-    answer = question_json['answer']
-    questions.append(question)
-    answers.append(answer)
+      
+      if test_splits:
+            #if you want to test question splits: 
+            splits = get_splits(question_json['text'])
+            #print(splits)
 
-    limit -= 1 
-    if limit < 0:
-          break 
+            for q in splits:
+                  if q is not None and q != "":
+                        questions.append(q)
+                        answers.append(question_json["answer"])
+
+                        
+
+      question = question_json['text']
+      answer = question_json['answer']
+      questions.append(question)
+      answers.append(answer)
+
+      limit -= 1 
+      if limit < 0:
+            break 
 
 
 
@@ -83,6 +108,13 @@ guesses = []
 buzz = []
 correct_answer = []
 for idx, (result_answer, result_bool) in enumerate(result): 
+        if result_answer is None or answers[idx] is None:
+            result_answer = " "
+            print(f"abandoned: {result_answer} or {answers[idx]}")
+            guesses.append(result_answer)
+            correct_answer.append(answers[idx])
+            buzz.append(False)
+
         if answers[idx] == result_answer:
             correct += 1 
             guesses.append(result_answer)
@@ -90,7 +122,7 @@ for idx, (result_answer, result_bool) in enumerate(result):
             buzz.append(True)
             #print("correct | question: " + questions[idx] + " | answer: " + result_answer)
         elif answers[idx].find(result_answer) != -1:
-            print("almost | correct answer: " + answers[idx] + " | result: " + result_answer)
+            #print("almost | correct answer: " + answers[idx] + " | result: " + result_answer)
             almost_correct += 1
             guesses.append(result_answer)
             correct_answer.append(answers[idx])
@@ -113,7 +145,7 @@ data_df = pd.DataFrame({
 })
 
 #json.dump(data_df)
-data_df.to_csv('output_data_csv', sep='\t')
+#data_df.to_csv('output_data_csv')
 
 
 
