@@ -116,8 +116,8 @@ with open(data_source) as f:
 questions_json = doc['questions']
 questions = []
 answers = []
-limit = 100 #only test this many or less questions 
-test_splits = True 
+limit = 100 # <-------- number of questions 
+test_splits = True # <------ test splits of questions (split in to sentences and test chunks. )
 for x in range(limit):
 
       question_json = random.choice(questions_json)
@@ -151,6 +151,12 @@ buzz = []
 correct_answer = []
 buzz_result = []
 confidence = Counter()
+
+agro_questions = []
+agro_correct = []
+agro_guess = []
+agro_buzz = []
+
 for idx, (result_answer, result_buzz) in enumerate(result): 
         if result_answer is None or answers[idx] is None:
             result_answer = "NONE"
@@ -209,6 +215,10 @@ for idx, (result_answer, result_buzz) in enumerate(result):
             buzz_result.append(result_buzz)
             if result_buzz:
                  confidence["aggressive_buzz"] += 1 
+                 agro_guess.append(result_answer)
+                 agro_correct.append(answers[idx])
+                 agro_buzz.append(result_buzz)
+                 agro_questions.append(questions[idx])
             else:
                  confidence["waiting_to_buzz(good)"] += 1
 
@@ -226,7 +236,14 @@ merged_df = pd.merge(data_df, buzzer_df, on='question')
 
 #merged_df.to_csv('output_data_with_features_0_csv')
 
+data_df = pd.DataFrame({
+      'question': agro_questions,
+      'correct_answer': agro_correct,
+      'guess': agro_guess,
+      'buzz': agro_buzz
+})
 
+data_df.to_csv('aggressive_buzz_questions_csv')
 
 correct_acc = correct/(len(answers))          
 print("correct: " + str(correct_acc))
