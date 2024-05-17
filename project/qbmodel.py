@@ -18,7 +18,7 @@ class QuizBowlModel:
         as it will increase latency severely. 
         """
         #best accuracy when using wiki_page_text.json
-        self.guesser = TfidfWikiGuesser(wikidump=None, use_hf_pkl= use_hf_pkl) #can specify different wikidump if needed 
+        self.guesser = TfidfWikiGuesser(use_hf_pkl= use_hf_pkl) #can specify different wikidump if needed 
         print("guesser model loaded")
 
         self.buzzer = LogisticRegressionBuzzer()

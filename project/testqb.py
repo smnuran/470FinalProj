@@ -33,7 +33,6 @@ def rough_compare(guess, page):
     See if a guess is correct.  Not perfect, but better than direct string
     comparison.  Allows for slight variation.
     """
-    # TODO: Also add the original answer line
     if page is None:
         return False
     
@@ -86,7 +85,7 @@ def compare_answers(str1: str, str2: str):
 
 
 
-qb = QuizBowlModel()
+qb = QuizBowlModel(use_hf_pkl=True)
 
 question = '''An object orbiting this planet contains sections named Liberty, Equality, and Fraternity.
  A small group of clouds on this planet was nicknamed \"the Scooter\" for its high speed. 

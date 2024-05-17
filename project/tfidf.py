@@ -24,6 +24,7 @@ class TfidfWikiGuesser:
         #model_file = "processed_tfidf_wiki_16_model.pkl"
         # full_model_path = model_file
         full_model_path = os.path.join("./models", model_file)
+        use_local_pkl = False 
 
         if(use_hf_pkl):
             REPO_ID = "nes470/pipeline-as-repo"
@@ -32,19 +33,18 @@ class TfidfWikiGuesser:
             model = joblib.load(
                 hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
             )
-            
+   
         
             print("loading from hugginface pkl file")
             self.load_from_pk_direct(model)
         else:
-            if os.path.exists(full_model_path):
+            if use_local_pkl and os.path.exists(full_model_path):
                 print("Loading model from pickle...")
                 self.load_from_pkl(full_model_path)
             else:
-                if wikidump:
-                    print("No pre-trained model found, loading data from dump...")
-                    self.load_model(wikidump)
-                    self.save_model(full_model_path)
+                print("No pre-trained model found, loading data from dump...")
+                self.load_model(wikidump)
+                self.save_model(full_model_path)
         # self.load_model(wikidump)
 
     def load_model(self, wikidump):
