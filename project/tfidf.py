@@ -20,6 +20,7 @@ class TfidfWikiGuesser:
         self.vectorizer = None 
         self.lemmatizer = WordNetLemmatizer()
         model_file = "processed_tfidf_wiki_page_text_model.pkl" # <--- has best acc so far (using wiki_page_text.json from gdrive folder)
+        #model_file = "processed_large_wiki_text_model.pkl"
         #model_file = "processed_tfidf_wiki_16_model.pkl"
         # full_model_path = model_file
         full_model_path = os.path.join("./models", model_file)
@@ -92,11 +93,13 @@ class TfidfWikiGuesser:
         
         # best_docs = []
         best_guesses = []
+        cos_sim_scores = []
         for i in best_indices:
             # best_docs.append(self.corpus[i])
             best_guesses.append(self.titles[i])
+            cos_sim_scores.append(sim[[i], 0])
 
-        return best_guesses
+        return best_guesses, cos_sim_scores
         
     def save_model(self, file_name):
         with open(file_name, 'wb') as f:

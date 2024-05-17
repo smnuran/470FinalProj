@@ -5,6 +5,7 @@ from tfidf import TfidfWikiGuesser
 import numpy as np
 import pandas as pd
 from LogRegBuzzer import LogisticRegressionBuzzer
+import time 
 
 
 class QuizBowlModel:
@@ -24,7 +25,7 @@ class QuizBowlModel:
         print("buzzer model loaded")
 
 
-    def guess_and_buzz(self, question_text: List[str]) -> List[Tuple[str, bool]]:
+    def guess_and_buzz(self, question_text: List[str]):
         """
         This function accepts a list of question strings, and returns a list of tuples containing
         strings representing the guess and corresponding booleans representing 
@@ -38,21 +39,30 @@ class QuizBowlModel:
 
         answers = []
         top_guesses = 3 #guesser will return this amount guesses for each question (in sorted confidence)
+        work_time = 1
 
         for question in question_text:
-            guesses = self.guesser.make_guess(question, num_guesses=top_guesses)
-            # print(f"\n\n\n answered {len(answers)} questions so far \n\n")
-            # print(f"left to answer {len(question_text)-len(answers)} questions \n\n ")
-            # print(f"progress: {(len(answers)/len(question_text)) * 100} \n\n")
+            start_time = time.time()
+            guesses, sim_scores = self.guesser.make_guess(question, num_guesses=top_guesses)
+
+            #helper tools
+            print(f"\n\n\n answered {len(answers)} questions so far \n\n")
+            print(f"left to answer {len(question_text)-len(answers)} questions \n\n ")
+            predicted_time = ((len(question_text)-len(answers))*work_time)/60 
+            print(f"progress: {(len(answers)/len(question_text)) * 100}, estimated time {round(predicted_time, 2)} mins \n\n")
 
             #do the buzzing 
-            buzz = self.buzzer.predict_buzz(question, guesses[0])
-            
+            buzz = self.buzzer.predict_buzz(question, guesses[0], sim_scores[0])
+            # buzz[0] is true or false
+            # buzz[1] is the confidence 
 
             #make a tuple and add to answers list 
-            tup = (guesses[0], buzz[1])
-            print(tup)
+            tup = (guesses[0], buzz[0])
+            #print(tup)
             answers.append(tup)
+            #might neeed to format guees like replace _ with space 
+            end_time = time.time()
+            work_time = end_time - start_time
 
         return answers
 
